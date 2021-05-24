@@ -1,0 +1,237 @@
+{
+  "type": "AdaptiveCard",
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "version": "1.2",
+  "body": [
+    {
+      "$when": "${Title != null && Title != ''}",
+      "id": "title",
+      "type": "TextBlock",
+      "text": "${Title}",
+      "wrap": true,
+      "size": "large",
+      "weight": "bolder"
+    },
+    {
+      "$when": "${StatusType != null && StatusType != ''}",
+      "type": "ColumnSet",
+      "columns": [
+        {
+          "type": "Column",
+          "width": "90px",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "In/Out",
+              "wrap": true,
+              "weight": "Bolder"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "${StatusType}",
+              "wrap": true
+            }
+          ]
+        }
+      ],
+      "separator": true
+    },
+    {
+      "$when": "${Status != null && Status != ''}",
+      "type": "ColumnSet",
+      "columns": [
+        {
+          "type": "Column",
+          "width": "90px",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "Status",
+              "wrap": true,
+              "weight": "Bolder"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "${Status}",
+              "wrap": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "$when": "${Comments != null && Comments != ''}",
+      "type": "ColumnSet",
+      "columns": [
+        {
+          "type": "Column",
+          "width": "90px",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "Comments",
+              "wrap": true,
+              "weight": "Bolder"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "${Comments}",
+              "wrap": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "$when": "${(SensitiveAreHidden == null || SensitiveAreHidden == false) && (Location != null && Location != '')}",
+      "type": "ColumnSet",
+      "id": "locationColumn",
+      "columns": [
+        {
+          "type": "Column",
+          "width": "90px",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "Location",
+              "wrap": true,
+              "weight": "Bolder"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "wrap": true,
+              "text": "${Location}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "$when": "${Expired != null && Expired != ''}",
+      "type": "ColumnSet",
+      "columns": [
+        {
+          "type": "Column",
+          "width": "90px",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "Expired",
+              "wrap": true,
+              "weight": "Bolder"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "wrap": true,
+              "text": "${Expired}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "$when": "${Updated != null && Updated != ''}",
+      "type": "ColumnSet",
+      "columns": [
+        {
+          "type": "Column",
+          "width": "90px",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "Updated",
+              "wrap": true,
+              "weight": "Bolder"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "${Updated}",
+              "wrap": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "$when": "${ActionsAreHidden == null || ActionsAreHidden == false}",
+      "type": "Action.Submit",
+      "title": "Update",
+      "data": {
+        "msteams": {
+          "type": "messageBack",
+          "text": "update status command"
+        }
+      }
+    },
+    {
+      "$when": "${ActionsAreHidden == null || ActionsAreHidden == false && count(Logs) > 0}}",
+      "type": "Action.ShowCard",
+      "title": "Log",
+      "card": {
+        "type": "AdaptiveCard",
+        "version": "1.2",
+        "body": [
+          {
+            "$data": "${Logs}",
+            "type": "FactSet",
+            "facts": [
+              {
+                "title": "${Date}",
+                "value": "${UpdatedBy}"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "$when": "${(ActionsAreHidden == null || ActionsAreHidden == false) && ExtendStatusIsShown}",
+      "type": "Action.Submit",
+      "title": "Extend my status",
+      "data": {
+        "msteams": {
+          "type": "messageBack",
+          "text": "extend status command"
+        }
+      }
+    }
+  ]
+}

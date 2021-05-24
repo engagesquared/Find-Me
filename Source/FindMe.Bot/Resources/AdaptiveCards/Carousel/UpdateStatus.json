@@ -1,0 +1,38 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.2",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Update status",
+      "size": "medium",
+      "weight": "bolder",
+      "wrap": true
+    },
+    {
+      "type": "Image",
+      "url": "${BackgroundImageUrl}",
+      "width": "460px",
+      "height": "307px"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Update your status to show your colleagues where you are.",
+      "wrap": true
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "Update status",
+      "style": "default",
+      "data": {
+        "msteams": {
+          "type": "messageBack",
+          "text": "update status"
+        }
+      }
+    }
+  ]
+}

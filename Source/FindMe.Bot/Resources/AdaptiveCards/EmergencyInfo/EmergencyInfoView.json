@@ -1,0 +1,85 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.2",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "My Emergency Info",
+      "size": "Medium",
+      "weight": "Bolder",
+      "wrap": true
+    },
+    {
+      "type": "TextBlock",
+      "text": "Personal number",
+      "size": "small",
+      "isSubtle": "true",
+      "wrap": true
+    },
+    {
+      "$when": "${PersonalNumber != null && PersonalNumber != ''}",
+      "type": "TextBlock",
+      "text": "${PersonalNumber}",
+      "wrap": true
+    },
+    {
+      "type": "TextBlock",
+      "text": "Next of kin name",
+      "size": "small",
+      "isSubtle": "true",
+      "wrap": true
+    },
+    {
+      "$when": "${KinName != null && KinName != ''}",
+      "type": "TextBlock",
+      "text": "${KinName}",
+      "wrap": true
+    },
+    {
+      "type": "TextBlock",
+      "text": "Next of kin relationshp",
+      "size": "small",
+      "isSubtle": "true",
+      "wrap": true
+    },
+    {
+      "$when": "${KinRelationship != null && KinRelationship != ''}",
+      "type": "TextBlock",
+      "text": "${KinRelationship}",
+      "wrap": true
+    },
+    {
+      "type": "TextBlock",
+      "text": "Next of kin number",
+      "size": "small",
+      "isSubtle": "true",
+      "wrap": true
+    },
+    {
+      "$when": "${KinNumber != null && KinNumber != ''}",
+      "type": "TextBlock",
+      "text": "${KinNumber}",
+      "wrap": true
+    },
+    {
+      "$when": "${ActionsAreHidden != true}",
+      "type": "ActionSet",
+      "actions": [
+        {
+          "type": "Action.Submit",
+          "id": "edit",
+          "style": "positive",
+          "title": "Edit",
+          "data": { "type": "edit" }
+        },
+        {
+          "type": "Action.Submit",
+          "title": "Cancel",
+          "id": "cancel",
+          "data": { "type": "cancel" }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,400 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "baseResourceName": {
+            "defaultValue": "FindMe",
+            "type": "String"
+        },
+        "botAppId": {
+            "type": "String"
+        },
+        "botAppSecret": {
+            "type": "String"
+        },
+        "tenantId": {
+            "type": "string"
+        },
+        "findMeAppId":{
+            "type": "string"
+        },
+        "findMeAppSecret":{
+            "type": "string"
+        },
+        "aadAppConnectionName":{
+            "type": "string",
+            "defaultValue":"AadUserApp"
+        },
+        "aadScopes":{
+            "type": "string",
+            "defaultValue":"User.Read Presence.Read.All"
+        },
+        "dbAdministratorLogin":{
+            "type": "String"
+        },
+        "dbAdministratorPassword":{
+            "type": "securestring",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "location": {
+            "defaultValue": "[resourceGroup().location]",
+            "type": "String",
+            "metadata": {
+                "description": "The location in which the resources should be deployed. By default it is set to the location of the resource group."
+            }
+        }
+    },
+    "variables": {
+        "rgUniqueStr": "[substring(uniqueString(resourceGroup().id), 0, 4)]",
+        "botServiceId": "[concat(parameters('baseResourceName'),'Bot', variables('rgUniqueStr'))]",
+        "sqlServerName": "[concat(parameters('baseResourceName'),'SqlServ', variables('rgUniqueStr'))]",
+        "botWebAppName": "[concat(parameters('baseResourceName'),'WebApp', variables('rgUniqueStr'))]",
+        "botWebUrl": "[concat('https://',variables('botWebAppName'), '.azurewebsites.net')]",
+        "hostingPlanName": "[concat(parameters('baseResourceName'),'ASP', variables('rgUniqueStr'))]",
+        "functionName": "[concat(parameters('baseResourceName'),'Func', variables('rgUniqueStr'))]",
+        "storageAccountName": "[toLower(concat(parameters('baseResourceName'),'Storage', variables('rgUniqueStr')))]",
+        "insightsNameBot": "[concat(parameters('baseResourceName'),'BotAppInsights', variables('rgUniqueStr'))]",
+        "insightsNameWebApp": "[concat(parameters('baseResourceName'),'WebAppAppInsights', variables('rgUniqueStr'))]",
+        "insightsNameFunc": "[concat(parameters('baseResourceName'),'FuncAppInsights', variables('rgUniqueStr'))]",
+        "dbConnectionString":"[concat('Server=tcp:',variables('sqlServerName'),'.database.windows.net,1433;Initial Catalog=findme;Persist Security Info=False;User ID=',parameters('dbAdministratorLogin'),';Password=',parameters('dbAdministratorPassword'),';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Sql/servers",
+            "apiVersion": "2020-08-01-preview",
+            "name": "[variables('sqlServerName')]",
+            "location": "[parameters('location')]",
+            "kind": "v12.0",
+            "properties": {
+                "administratorLogin": "[parameters('dbAdministratorLogin')]",
+                "administratorLoginPassword": "[parameters('dbAdministratorPassword')]",
+                "version": "12.0",
+                "publicNetworkAccess": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/firewallRules",
+            "apiVersion": "2020-08-01-preview",
+            "name": "[concat(variables('sqlServerName'), '/AllowAllWindowsAzureIps')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', variables('sqlServerName'))]"
+            ],
+            "properties": {
+                "startIpAddress": "0.0.0.0",
+                "endIpAddress": "0.0.0.0"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases",
+            "apiVersion": "2020-08-01-preview",
+            "name": "[concat(variables('sqlServerName'), '/findme')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', variables('sqlServerName'))]"
+            ],
+            "sku": {
+                "name": "Standard",
+                "tier": "Standard",
+                "capacity": 10
+            },
+            "kind": "v12.0,user",
+            "properties": {
+                "collation": "SQL_Latin1_General_CP1_CI_AS",
+                "maxSizeBytes": 10737418240,
+                "catalogCollation": "SQL_Latin1_General_CP1_CI_AS",
+                "zoneRedundant": false,
+                "readScale": "Disabled",
+                "storageAccountType": "GRS"
+            }
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2018-02-01",
+            "name": "[variables('hostingPlanName')]",
+            "location": "[parameters('location')]",
+            "sku": {
+                "name": "S1",
+                "tier": "Standard",
+                "size": "S1",
+                "family": "S",
+                "capacity": 1
+            },
+            "kind": "",
+            "properties": {
+                "maximumElasticWorkerCount": 1,
+                "targetWorkerCount": 0,
+                "targetWorkerSizeId": 0
+            }
+        },
+        {
+            "type": "microsoft.insights/components",
+            "apiVersion": "2015-05-01",
+            "name": "[variables('insightsNameWebApp')]",
+            "location": "[parameters('location')]",
+            "tags": {},
+            "kind": "web",
+            "properties": {
+                "ApplicationId": "[variables('botWebAppName')]",
+                "Application_Type": "web"
+            }
+        },
+        {
+            "apiVersion": "2018-11-01",
+            "name": "[variables('botWebAppName')]",
+            "type": "Microsoft.Web/sites",
+            "location": "[parameters('location')]",
+            "tags": {},
+            "dependsOn": [
+                "[concat('microsoft.insights/components/', variables('insightsNameWebApp'))]",
+                "[concat('Microsoft.Web/serverfarms/', variables('hostingPlanName'))]"
+            ],
+            "properties": {
+                "name": "[variables('botWebAppName')]",
+                "siteConfig": {
+                    "appSettings": [
+                        {
+                            "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                            "value": "[reference(concat('microsoft.insights/components/', variables('insightsNameWebApp')), '2015-05-01').InstrumentationKey]"
+                        },
+                        {
+                            "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                            "value": "[reference(concat('microsoft.insights/components/', variables('insightsNameWebApp')), '2015-05-01').ConnectionString]"
+                        },
+                        {
+                            "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+                            "value": "~2"
+                        },
+                        {
+                            "name": "XDT_MicrosoftApplicationInsights_Mode",
+                            "value": "default"
+                        },
+                        {
+                            "name": "MicrosoftAppId",
+                            "value": "[parameters('botAppId')]"
+                        },
+                        {
+                            "name": "MicrosoftAppPassword",
+                            "value": "[parameters('botAppSecret')]"
+                        },
+                        {
+                            "name": "TenantId",
+                            "value": "[parameters('tenantId')]"
+                        },
+                        {
+                            "name": "FMAppId",
+                            "value": "[parameters('findMeAppId')]"
+                        },
+                        {
+                            "name": "FMAppPassword",
+                            "value": "[parameters('findMeAppSecret')]"
+                        },
+                        {
+                            "name": "HostBaseUrl",
+                            "value": "[variables('botWebUrl')]"
+                        },
+                        {
+                            "name": "FMAppConnectionName",
+                            "value": "[parameters('aadAppConnectionName')]"
+                        }
+                    ],
+                    "connectionStrings":[
+                        {
+                            "connectionString":"[variables('dbConnectionString')]",
+                            "name":"FindMeDb",
+                            "type": "SQLAzure"
+                        }
+                    ],
+                    "alwaysOn": true,
+                    "phpVersion": "OFF",
+                    "metadata": [
+                        {
+                            "name": "CURRENT_STACK",
+                            "value": "dotnetcore"
+                        }
+                    ]
+                },
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
+                "clientAffinityEnabled": true
+            }
+        },
+        {
+            "type": "microsoft.insights/components",
+            "apiVersion": "2014-04-01",
+            "name": "[variables('insightsNameBot')]",
+            "location": "[parameters('location')]",
+            "tags": {},
+            "kind": "web",
+            "properties": {
+                "ApplicationId": "[variables('botServiceId')]"
+            }
+        },
+        {
+            "type": "Microsoft.BotService/botServices",
+            "apiVersion": "2017-12-01",
+            "name": "[variables('botServiceId')]",
+            "location": "global",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components/', variables('insightsNameBot'))]",
+                "[resourceId('Microsoft.Web/Sites', variables('botWebAppName'))]"
+            ],
+            "sku": {
+                "name": "F0"
+            },
+            "kind": "sdk",
+            "properties": {
+                "name": "[variables('botServiceId')]",
+                "displayName": "FindMe Bot",
+                "endpoint": "[concat(variables('botWebUrl'),'/api/messages')]",
+                "msaAppId": "[parameters('botAppId')]",
+                "developerAppInsightsApplicationId": "[variables('insightsNameBot')]",
+                "developerAppInsightKey": "[reference(resourceId('microsoft.insights/components/', variables('insightsNameBot')), '2015-05-01').InstrumentationKey]",
+                "iconUrl": "https://docs.botframework.com/static/devportal/client/images/bot-framework-default.png"
+            }
+        },
+        {
+            "type": "Microsoft.BotService/botServices/channels",
+            "apiVersion": "2020-06-02",
+            "name": "[concat(variables('botServiceId'), '/MsTeamsChannel')]",
+            "location": "global",
+            "dependsOn": ["[resourceId('Microsoft.BotService/botServices', variables('botServiceId'))]"],
+            "properties": {
+                "properties": {
+                    "enableCalling": false,
+                    "isEnabled": true
+                },
+                "channelName": "MsTeamsChannel"
+            }
+        },
+        {
+            "type": "Microsoft.BotService/botServices/connections",
+            "apiVersion": "2018-07-12",
+            "name": "[concat(variables('botServiceId'), '/', parameters('aadAppConnectionName'))]",
+            "location": "global",
+            "dependsOn": [
+                "[resourceId('Microsoft.BotService/botServices', variables('botServiceId'))]"
+            ],
+            "properties": {
+                "serviceProviderDisplayName": "Azure Active Directory v2",
+                "serviceProviderId": "30dd229c-58e3-4a48-bdfd-91ec48eb906c",
+                "parameters": [
+                    {
+                        "key": "clientId",
+                        "value": "[parameters('findMeAppId')]"
+                    },
+                    {
+                        "key": "clientSecret",
+                        "value": "[parameters('findMeAppSecret')]"
+                    },
+                    {
+                        "key": "scopes",
+                        "value": "[parameters('aadScopes')]"
+                    },
+                    {
+                        "key": "tenantID",
+                        "value": "[parameters('tenantId')]"
+                    }
+                ]
+            }
+        },
+        {
+            "apiVersion": "2019-06-01",
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[variables('storageAccountName')]",
+            "location": "[parameters('location')]",
+            "tags": {},
+            "kind": "Storage",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "properties": {
+                "supportsHttpsTrafficOnly": true,
+                "minimumTlsVersion": "TLS1_2"
+            }
+        },
+        {
+            "apiVersion": "2020-02-02-preview",
+            "name": "[variables('insightsNameFunc')]",
+            "type": "microsoft.insights/components",
+            "location": "[parameters('location')]",
+            "tags": {},
+            "dependsOn": [],
+            "properties": {
+                "ApplicationId": "[variables('functionName')]",
+                "Request_Source": "IbizaWebAppExtensionCreate",
+                "Flow_Type": "Redfield",
+                "Application_Type": "web"
+            }
+        },
+        {
+            "apiVersion": "2018-11-01",
+            "name": "[variables('functionName')]",
+            "type": "Microsoft.Web/sites",
+            "kind": "functionapp",
+            "location": "[parameters('location')]",
+            "tags": {},
+            "dependsOn": [
+                "[concat('microsoft.insights/components/', variables('insightsNameFunc'))]",
+                "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+                "[concat('Microsoft.Web/serverfarms/', variables('hostingPlanName'))]"
+            ],
+            "properties": {
+                "name": "[variables('functionName')]",
+                "siteConfig": {
+                    "appSettings": [
+                        {
+                            "name": "FUNCTIONS_EXTENSION_VERSION",
+                            "value": "~3"
+                        },
+                        {
+                            "name": "FUNCTIONS_WORKER_RUNTIME",
+                            "value": "dotnet"
+                        },
+                        {
+                            "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                            "value": "[reference(concat('microsoft.insights/components/', variables('insightsNameFunc')), '2015-05-01').InstrumentationKey]"
+                        },
+                        {
+                            "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                            "value": "[reference(concat('microsoft.insights/components/', variables('insightsNameFunc')), '2015-05-01').ConnectionString]"
+                        },
+                        {
+                            "name": "AzureWebJobsStorage",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01').keys[0].value,';EndpointSuffix=','core.windows.net')]"
+                        },
+                        {
+                            "name": "FindMeDbConnectionString",
+                            "value": "[variables('dbConnectionString')]"
+                        },
+                        {
+                            "name": "BotBaseUrl",
+                            "value": "[variables('botWebUrl')]"
+                        },
+                        {
+                            "name": "StatusReminderSchedule",
+                            "value": "0 */5 * * * *"
+                        },
+                        {
+                            "name": "ShiftsReminderSchedule",
+                            "value": "0 0 0 * * Mon"
+                        }
+                    ],
+                    "alwaysOn": true
+                },
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
+                "clientAffinityEnabled": false
+            }
+        }
+    ],
+    "outputs": {
+        "webAppName": {
+            "type": "string",
+            "value": "[variables('botWebAppName')]"
+        },
+        "funcAppName": {
+            "type": "string",
+            "value": "[variables('functionName')]"
+        }
+    }
+}

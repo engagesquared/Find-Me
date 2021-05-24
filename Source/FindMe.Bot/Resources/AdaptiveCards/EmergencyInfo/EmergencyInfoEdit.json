@@ -1,0 +1,82 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.2",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "My Emergency Info",
+      "size": "Medium",
+      "weight": "Bolder",
+      "wrap": true
+    },
+    {
+      "type": "TextBlock",
+      "text": "Personal number",
+      "size": "small",
+      "isSubtle": "true",
+      "wrap": true
+    },
+    {
+      "type": "Input.Text",
+      "value": "${PersonalNumber}",
+      "id": "personalNumber",
+      "style": "Tel"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Next of kin name",
+      "size": "small",
+      "isSubtle": "true",
+      "wrap": true
+    },
+    {
+      "type": "Input.Text",
+      "value": "${KinName}",
+      "id": "kinName"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Next of kin relationshp",
+      "size": "small",
+      "isSubtle": "true",
+      "wrap": true
+    },
+    {
+      "type": "Input.Text",
+      "value": "${KinRelationship}",
+      "id": "kinRelationship"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Next of kin number",
+      "size": "small",
+      "isSubtle": "true",
+      "wrap": true
+    },
+    {
+      "type": "Input.Text",
+      "style": "Tel",
+      "value": "${KinNumber}",
+      "id": "kinNumber"
+    },
+    {
+      "type": "ActionSet",
+      "actions": [
+        {
+          "type": "Action.Submit",
+          "id": "submit",
+          "style": "positive",
+          "title": "Save",
+          "data": { "type": "save" }
+        },
+        {
+          "type": "Action.Submit",
+          "title": "Cancel",
+          "id": "cancel",
+          "data": { "type": "cancel" }
+        }
+      ]
+    }
+  ]
+}

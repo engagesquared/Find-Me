@@ -1,0 +1,162 @@
+{
+  "type": "AdaptiveCard",
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "version": "1.2",
+  "body": [
+    {
+      "$when": "${UserName != null && UserName != ''}",
+      "type": "TextBlock",
+      "weight": "bolder",
+      "size": "medium",
+      "text": "${UserName}"
+    },
+    {
+      "type": "ColumnSet",
+      "columns": [
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "Are you in the office/ward?",
+              "wrap": true,
+              "size": "Small",
+              "weight": "Bolder"
+            },
+            {
+              "type": "Input.ChoiceSet",
+              "id": "statusType",
+              "choices": [
+                {
+                  "title": "IN",
+                  "value": 1
+                },
+                {
+                  "title": "OUT",
+                  "value": 2
+                }
+              ],
+              "value": 1,
+              "style": "expanded"
+            },
+            {
+              "type": "TextBlock",
+              "text": "Time of expiry",
+              "wrap": true,
+              "separator": true,
+              "size": "Small",
+              "weight": "Bolder"
+            },
+            {
+              "type": "Input.Time",
+              "id": "expiryTime",
+              "value": "15:00"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "Status",
+              "wrap": true,
+              "size": "Small",
+              "weight": "Bolder"
+            },
+            {
+              "type": "Input.ChoiceSet",
+              "id": "status",
+              "choices": "${Statuses}"
+            },
+            {
+              "type": "TextBlock",
+              "wrap": true,
+              "size": "Small",
+              "isSubtle": true,
+              "text": "Other status (will be set if \"Other\" option selected above)",
+              "weight": "Bolder"
+            },
+            {
+              "type": "Input.Text",
+              "placeholder": "Status",
+              "id": "otherStatus"
+            }
+          ]
+        }
+      ],
+      "separator": true
+    },
+    {
+      "type": "TextBlock",
+      "text": "Location",
+      "wrap": true,
+      "separator": true,
+      "size": "Small",
+      "weight": "Bolder"
+    },
+    {
+      "type": "Input.Toggle",
+      "title": "Is sensitive (only Manager can see)",
+      "id": "newLocationSensitive"
+    },
+    {
+      "type": "Input.ChoiceSet",
+      "placeholder": "Select location",
+      "id": "location",
+      "style": "compact",
+      "choices": "${Locations}"
+    },
+    {
+      "type": "TextBlock",
+      "wrap": true,
+      "size": "Small",
+      "isSubtle": true,
+      "text": "New location (will be added if \"New location\" option selected above)",
+      "weight": "Bolder"
+    },
+    {
+      "type": "Input.Text",
+      "placeholder": "Address",
+      "id": "newLocationAddress"
+    },
+    {
+      "type": "Input.Text",
+      "placeholder": "Phone number",
+      "id": "newLocationNumber"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Comment",
+      "wrap": true,
+      "size": "Small",
+      "weight": "Bolder",
+      "separator": true
+    },
+    {
+      "type": "Input.Text",
+      "placeholder": "Enter comment",
+      "id": "comment"
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "Update",
+      "id": "save",
+      "style": "positive",
+      "data": {
+        "type": "save"
+      }
+    },
+    {
+      "type": "Action.Submit",
+      "title": "Cancel",
+      "data": {
+        "type": "cancel"
+      }
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.2",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Change your hours",
+      "size": "medium",
+      "weight": "bolder",
+      "wrap": true
+    },
+    {
+      "type": "Image",
+      "url": "${BackgroundImageUrl}",
+      "width": "460px",
+      "height": "306px"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Edit your default hours.",
+      "wrap": true
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "Change hours",
+      "data": {
+        "msteams": {
+          "type": "messageBack",
+          "text": "change hours"
+        }
+      }
+    }
+  ]
+}

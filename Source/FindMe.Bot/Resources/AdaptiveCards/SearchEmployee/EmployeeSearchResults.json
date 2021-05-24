@@ -1,0 +1,63 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.2",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "${containerTitle}",
+      "wrap": true,
+      "size": "medium",
+      "weight": "bolder"
+    },
+    {
+      "$data": "${users}",
+      "type": "Container",
+      "selectAction": {
+        "type": "Action.Submit",
+        "data": {
+          "userAadId": "${id}"
+        }
+      },
+      "items": [
+        {
+          "type": "ColumnSet",
+          "columns": [
+            {
+              "type": "Column",
+              "width": "auto",
+              "items": [
+                {
+                  "type": "Image",
+                  "style": "Person",
+                  "size": "Small",
+                  "url": "${imageUrl}"
+                }
+              ]
+            },
+            {
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "$when": "${displayName != ''}",
+                  "type": "TextBlock",
+                  "text": "${displayName}",
+                  "wrap": true,
+                  "weight": "Bolder"
+                },
+                {
+                  "$when": "${jobTitle != ''}",
+                  "type": "TextBlock",
+                  "text": "${jobTitle}",
+                  "wrap": true,
+                  "spacing": "None"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

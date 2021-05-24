@@ -1,0 +1,33 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.2",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Welcome to FindMe!",
+      "size": "medium",
+      "weight": "bolder",
+      "wrap": true
+    },
+    {
+      "type": "TextBlock",
+      "text": "Hello, I'm FindMe, a bot that allows you to know the whereabouts of your colleagues and update your location at any time",
+      "wrap": true
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "Take a tour",
+      "style": "default",
+      "data": {
+        "msteams": {
+          "type": "messageBack",
+          "displayText": "Take a tour",
+          "text": "take a tour"
+        }
+      }
+    }
+  ]
+}

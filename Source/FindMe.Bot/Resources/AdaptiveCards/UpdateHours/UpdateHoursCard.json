@@ -1,0 +1,65 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.2",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Tell us more about your hours",
+      "size": "large",
+      "weight": "bolder"
+    },
+    {
+      "type": "TextBlock",
+      "text": "What are your standard hours",
+      "size": "Medium"
+    },
+    {
+      "type": "ColumnSet",
+      "separator": true,
+      "columns": [
+        {
+          "type": "Column",
+          "$data": "${days}",
+          "items": [
+            {
+              "type": "Container",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "${name}",
+                  "weight": "Bolder",
+                  "size": "Medium"
+                },
+                {
+                  "type": "TextBlock",
+                  "text": "Start"
+                },
+                {
+                  "type": "Input.Time",
+                  "id": "${DayId}StartTime",
+                  "value": "${startTime}"
+                },
+                {
+                  "type": "TextBlock",
+                  "text": "Finish"
+                },
+                {
+                  "type": "Input.Time",
+                  "id": "${DayId}EndTime",
+                  "value": "${endTime}"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "Submit"
+    }
+  ]
+}

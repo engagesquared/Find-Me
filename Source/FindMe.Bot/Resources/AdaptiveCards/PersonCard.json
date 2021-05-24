@@ -1,0 +1,240 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "version": "1.2",
+  "type": "AdaptiveCard",
+  "body": [
+    {
+      "type": "ColumnSet",
+      "columns": [
+        {
+          "type": "Column",
+          "width": 50,
+          "items": [
+            {
+              "$when": "${DisplayName != ''}",
+              "type": "TextBlock",
+              "text": "${DisplayName}",
+              "wrap": true,
+              "weight": "Bolder",
+              "size": "Large"
+            },
+            {
+              "$when": "${Email != ''}",
+              "type": "TextBlock",
+              "text": "${Email}",
+              "wrap": true,
+              "spacing": "Small"
+            },
+            {
+              "$when": "${JobTitle != ''}",
+              "type": "TextBlock",
+              "text": "${JobTitle}",
+              "wrap": true,
+              "spacing": "Small"
+            },
+            {
+              "$when": "${Phones != ''}",
+              "type": "TextBlock",
+              "text": "${Phones}",
+              "wrap": true,
+              "spacing": "Small"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "auto",
+          "items": [
+            {
+              "type": "Image",
+              "url": "${PhotoBase64}",
+              "size": "Large",
+              "horizontalAlignment": "Right",
+              "style": "Person"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "$when": "${(EmergencyPersonalNumber != '' || EmergencyName != '' || EmergencyRelationship != '' || EmergencyNumber != '') && (IsCurrentUser || IsUserManager)}",
+      "type": "ColumnSet",
+      "columns": [
+        {
+          "type": "Column",
+          "selectAction": {
+            "type": "Action.ToggleVisibility",
+            "targetElements": [
+              "showContacts",
+              "hideContacts",
+              "emergencyContacts"
+            ]
+          },
+          "items": [
+            {
+              "type": "TextBlock",
+              "id": "showContacts",
+              "color": "Accent",
+              "text": "Show emergency contacts",
+              "wrap": true
+            },
+            {
+              "type": "TextBlock",
+              "id": "hideContacts",
+              "color": "Accent",
+              "text": "Hide emergency contacts",
+              "wrap": true,
+              "isVisible": false
+            }
+          ],
+          "width": 1
+        }
+      ]
+    },
+    {
+      "$when": "${IsCurrentUser || IsUserManager}",
+      "type": "Container",
+      "items": [
+        {
+          "type": "FactSet",
+          "facts": [
+            {
+              "$when": "${EmergencyPersonalNumber != ''}",
+              "title": "Personal number:",
+              "value": "${EmergencyPersonalNumber}"
+            },
+            {
+              "$when": "${EmergencyName != ''}",
+              "title": "Next of kin name:",
+              "value": "${EmergencyName}"
+            },
+            {
+              "$when": "${EmergencyRelationship != ''}",
+              "title": "Next of kin relationship:",
+              "value": "${EmergencyRelationship}"
+            },
+            {
+              "$when": "${EmergencyNumber != ''}",
+              "title": "Next of kin number:",
+              "value": "${EmergencyNumber}"
+            }
+          ]
+        }
+      ],
+      "id": "emergencyContacts",
+      "isVisible": false
+    },
+    {
+      "$when": "${StatusInOut != '' || StatusText != '' || StatusLocation != '' || StatusComments != '' || StatusExpires != '' || StatusLastUpdated != ''}",
+      "type": "Container",
+      "separator": true,
+      "items": [
+        {
+          "type": "TextBlock",
+          "text": "Current status:",
+          "size": "Large",
+          "weight": "Bolder",
+          "wrap": true
+        },
+        {
+          "type": "FactSet",
+          "facts": [
+            {
+              "$when": "${StatusInOut != ''}",
+              "title": "In / Out:",
+              "value": "${StatusInOut}"
+            },
+            {
+              "$when": "${StatusText != ''}",
+              "title": "Status:",
+              "value": "${StatusText}"
+            },
+            {
+              "$when": "${StatusLocation != '' && CanSeeLocation}",
+              "title": "Location:",
+              "value": "${StatusLocation}"
+            },
+            {
+              "$when": "${StatusComments != ''}",
+              "title": "Comments:",
+              "value": "${StatusComments}"
+            },
+            {
+              "$when": "${StatusExpires != ''}",
+              "title": "Expires:",
+              "value": "${StatusExpires}"
+            },
+            {
+              "$when": "${StatusLastUpdated != ''}",
+              "title": "Last updated:",
+              "value": "${StatusLastUpdated}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "$when": "${ActionsAreHidden != true}",
+      "type": "ActionSet",
+      "actions": [
+        {
+          "$when": "${IsUserManager}",
+          "type": "Action.Submit",
+          "title": "Request Status",
+          "data": {
+            "msteams": {
+              "type": "messageBack",
+              "text": "person card request status"
+            }
+          }
+        },
+        {
+          "type": "Action.Submit",
+          "title": "Update Status",
+          "data": {
+            "msteams": {
+              "type": "messageBack",
+              "text": "person card update status"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "ActionSet",
+      "actions": [
+        {
+          "$when": "${count(Logs) > 0}",
+          "type": "Action.ShowCard",
+          "title": "Log",
+          "card": {
+            "type": "AdaptiveCard",
+            "body": [
+              {
+                "$data": "${Logs}",
+                "type": "FactSet",
+                "facts": [
+                  {
+                    "title": "${Date}",
+                    "value": "${UpdatedBy}"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "$when": "${ActionsAreHidden != true && (IsCurrentUser || IsUserManager)}",
+          "type": "Action.Submit",
+          "title": "Change manager",
+          "data": {
+            "msteams": {
+              "type": "messageBack",
+              "text": "person card change manager"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

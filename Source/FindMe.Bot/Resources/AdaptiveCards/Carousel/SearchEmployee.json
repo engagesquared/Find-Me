@@ -1,0 +1,37 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.2",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Search colleagues",
+      "size": "medium",
+      "weight": "bolder",
+      "wrap": true
+    },
+    {
+      "type": "Image",
+      "url": "${BackgroundImageUrl}",
+      "width": "460px",
+      "height": "306px"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Search employees and find out their status.",
+      "wrap": true
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "Search employee",
+      "data": {
+        "msteams": {
+          "type": "messageBack",
+          "text": "search employee"
+        }
+      }
+    }
+  ]
+}

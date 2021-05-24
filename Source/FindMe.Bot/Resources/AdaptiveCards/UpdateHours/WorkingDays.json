@@ -1,0 +1,55 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.2",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Select your working days:",
+      "wrap": true
+    },
+    {
+      "type": "Input.ChoiceSet",
+      "id": "workingDays",
+      "style": "expanded",
+      "isMultiSelect": true,
+      "choices": [
+        {
+          "title": "Monday",
+          "value": "1"
+        },
+        {
+          "title": "Tuesday",
+          "value": "2"
+        },
+        {
+          "title": "Wednesday",
+          "value": "3"
+        },
+        {
+          "title": "Thursday",
+          "value": "4"
+        },
+        {
+          "title": "Friday",
+          "value": "5"
+        },
+        {
+          "title": "Saturday",
+          "value": "6"
+        },
+        {
+          "title": "Sunday",
+          "value": "0"
+        }
+      ],
+      "value": "${selectedDaysCommaSeparated}"
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "Submit"
+    }
+  ]
+}

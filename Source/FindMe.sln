@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31025.194
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FindMe.Bot", "FindMe.Bot\FindMe.Bot.csproj", "{3E7DC3B2-0B76-4A19-A12E-862603103045}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F6AB5752-C52B-4571-A181-38CDF48D45DF}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		stylecop.json = stylecop.json
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FindMe.Core", "FindMe.Core\FindMe.Core.csproj", "{C522C0C4-2AAE-4981-87FC-A247B84538DE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FindMe.Func", "FindMe.Func\FindMe.Func.csproj", "{9AD20EBE-C1A5-463E-9A58-1E93B857E4DE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pipelines", "Pipelines", "{B584B130-A96C-4ADD-94CE-6904A1A9B4BA}"
+	ProjectSection(SolutionItems) = preProject
+		Pipelines\build.yaml = Pipelines\build.yaml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3E7DC3B2-0B76-4A19-A12E-862603103045}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E7DC3B2-0B76-4A19-A12E-862603103045}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E7DC3B2-0B76-4A19-A12E-862603103045}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E7DC3B2-0B76-4A19-A12E-862603103045}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C522C0C4-2AAE-4981-87FC-A247B84538DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C522C0C4-2AAE-4981-87FC-A247B84538DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C522C0C4-2AAE-4981-87FC-A247B84538DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C522C0C4-2AAE-4981-87FC-A247B84538DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9AD20EBE-C1A5-463E-9A58-1E93B857E4DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AD20EBE-C1A5-463E-9A58-1E93B857E4DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9AD20EBE-C1A5-463E-9A58-1E93B857E4DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9AD20EBE-C1A5-463E-9A58-1E93B857E4DE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B584B130-A96C-4ADD-94CE-6904A1A9B4BA} = {F6AB5752-C52B-4571-A181-38CDF48D45DF}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8191DB0F-17F9-4BC7-B606-78FF40125124}
+	EndGlobalSection
+EndGlobal

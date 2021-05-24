@@ -1,0 +1,77 @@
+{
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.8/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.8",
+  "version": "1.0",
+  "id": "25556ab7-a3af-43c0-931c-d29aebd3b095",
+  "packageName": "com.find.me.bot",
+  "developer": {
+    "name": "Engage Squared",
+    "websiteUrl": "https://engagesq.com/",
+    "privacyUrl": "https://engagesq.com/",
+    "termsOfUseUrl": "https://engagesq.com/",
+    "mpnId": "5185221"
+  },
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
+  "name": {
+    "short": "Find Me",
+    "full": "Find Me"
+  },
+  "description": {
+    "short": "Bot to help healthcare staff manage their statuses",
+    "full": "Microsoft Teams app that helps healthcare staff to track the location, manage and share current statuses, build reports."
+  },
+  "accentColor": "#FFFFFF",
+  "bots": [
+    {
+      "botId": "<bot app Id>",
+      "scopes": [
+        "personal"
+      ],
+      "supportsFiles": true,
+      "isNotificationOnly": false,
+      "commandLists": [
+        {
+          "scopes": [
+            "personal"
+          ],
+          "commands": [
+            {
+              "title": "Take a tour",
+              "description": "Learn about FindMe with a tour of the app"
+            },
+            {
+              "title": "Search employee",
+              "description": "Search for an employee and find out their status"
+            },
+            {
+              "title": "Update Status",
+              "description": "Update your status"
+            },
+            {
+              "title": "Change hours",
+              "description": "Edit your default hours"
+            },
+            {
+              "title": "My emergency info",
+              "description": "Check or update your emergency contact information"
+            },
+            {
+              "title": "Change my manager",
+              "description": "Change your manager"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "permissions": [
+    "identity",
+    "messageTeamMembers"
+  ],
+  "validDomains": [
+    "token.botframework.com"
+  ]
+}
