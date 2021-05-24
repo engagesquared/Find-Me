@@ -94,7 +94,7 @@ namespace FindMe.Bot.Dialogs
             {
                 Description = Strings.ReportConsentDescription,
                 SizeInBytes = file.Length,
-                AcceptContext = new {filename = filename },
+                AcceptContext = new { filename = filename },
             };
             var consentRequestAttachment = new Attachment
             {

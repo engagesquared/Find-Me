@@ -10,7 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Manifest\manifest.json" />
     <Content Remove="stylecop.json" />
   </ItemGroup>
 
@@ -35,7 +34,6 @@
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
     <AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" />
-    <None Include="Manifest\manifest.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -58,7 +56,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Properties\ServiceDependencies\" />
     <Folder Include="wwwroot\Images\" />
   </ItemGroup>
 </Project>
