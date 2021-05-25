@@ -224,7 +224,7 @@
           }
         },
         {
-          "$when": "${ActionsAreHidden != true && (IsCurrentUser || IsUserManager)}",
+          "$when": "${ActionsAreHidden != true && IsManagerChangeDisabled != true && (IsCurrentUser || IsUserManager)}",
           "type": "Action.Submit",
           "title": "Change manager",
           "data": {

@@ -160,22 +160,22 @@ namespace FindMe.Bot.Bots
         {
             try
             {
-                var userConversationRef = this.dbContext.ConverstaionReferences.Where(x => x.UserId == new Guid(userId)).Include(x => x.User).FirstOrDefault();
-                var newManagerConversationRef = this.dbContext.ConverstaionReferences.Where(x => x.UserId == new Guid(newManagerId)).Include(x => x.User).FirstOrDefault();
-                if (userConversationRef != null)
+                var user = this.dbContext.Users.Where(x => x.AadUserId == new Guid(userId)).Include(x => x.ConversationReference).FirstOrDefault();
+                var newManager = this.dbContext.Users.Where(x => x.AadUserId == new Guid(newManagerId)).Include(x => x.ConversationReference).FirstOrDefault();
+                if (user.ConversationReference != null)
                 {
-                    var message = this.adaptiveCardsService.GetTextCard(Strings.UpdateManagerNotificationUserMessage.Replace("{name}", newManagerConversationRef.User.Name));
-                    await this.SendMessageAsync(message, userConversationRef);
+                    var message = this.adaptiveCardsService.GetTextCard(Strings.UpdateManagerNotificationUserMessage.Replace("{name}", newManager.Name));
+                    await this.SendMessageAsync(message, user.ConversationReference);
                 }
                 else
                 {
                     this.logger.LogWarning($"Can't find conversation reference for user {userId}");
                 }
 
-                if (newManagerConversationRef != null)
+                if (newManager.ConversationReference != null)
                 {
-                    var message = this.adaptiveCardsService.GetTextCard(Strings.UpdateManagerNotificationNewManagerMessage.Replace("{name}", userConversationRef.User.Name));
-                    await this.SendMessageAsync(message, newManagerConversationRef);
+                    var message = this.adaptiveCardsService.GetTextCard(Strings.UpdateManagerNotificationNewManagerMessage.Replace("{name}", user.Name));
+                    await this.SendMessageAsync(message, newManager.ConversationReference);
                 }
                 else
                 {
@@ -187,7 +187,7 @@ namespace FindMe.Bot.Bots
                     var previousManagerConversationRef = this.dbContext.ConverstaionReferences.Where(x => x.UserId == new Guid(previousManagerId)).FirstOrDefault();
                     if (previousManagerConversationRef != null)
                     {
-                        var message = this.adaptiveCardsService.GetTextCard(Strings.UpdateManagerNotificationPreviousManagerMessage.Replace("{name}", userConversationRef.User.Name));
+                        var message = this.adaptiveCardsService.GetTextCard(Strings.UpdateManagerNotificationPreviousManagerMessage.Replace("{name}", user.Name));
                         await this.SendMessageAsync(message, previousManagerConversationRef);
                     }
                     else

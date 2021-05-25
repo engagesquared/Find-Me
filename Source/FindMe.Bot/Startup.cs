@@ -58,6 +58,7 @@ namespace FindMe.Bot
             services.AddScoped<StatusDialog>();
             services.AddScoped<ChangeHoursDialog>();
             services.AddScoped<TeamReportDialog>();
+            services.AddScoped<TeamStatusDialog>();
             services.AddScoped<SearchEmployeeDialog>();
             services.AddScoped<PersonCardDialog>();
             services.AddScoped<ChangeManagerDialog>();

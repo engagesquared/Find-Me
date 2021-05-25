@@ -28,6 +28,8 @@ namespace FindMe.Bot
 
         public string TenantId { get; private set; }
 
+        public bool IsChangeManagerDisabled { get; private set; }
+
         public string HostBaseUrl { get; private set; }
 
         private void Setup()
@@ -39,6 +41,7 @@ namespace FindMe.Bot
             this.AadAppId = this.configuration["FMAppId"];
             this.AadAppPassword = this.configuration["FMAppPassword"];
             this.HostBaseUrl = this.configuration["HostBaseUrl"];
+            this.IsChangeManagerDisabled = this.configuration.GetValue<bool?>("FMDisableChangeManager") == true;
         }
     }
 }

@@ -6,6 +6,7 @@ namespace FindMe.Core.DB
 {
     using FindMe.Core.DB.Entities;
     using Microsoft.EntityFrameworkCore;
+    using System;
 
     public class FindMeDbContext : DbContext
     {
@@ -61,13 +62,14 @@ namespace FindMe.Core.DB
                 e.HasOne(x => x.Manager).WithMany(x => x.Reporters).HasForeignKey(x => x.ManagerId).OnDelete(DeleteBehavior.NoAction);
                 e.HasMany(x => x.Statuses).WithOne(x => x.User).HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.NoAction);
                 e.HasMany(x => x.WeekSchedules).WithOne(x => x.User).HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.NoAction);
+                e.HasOne(x => x.ConversationReference).WithOne(x => x.User).HasForeignKey<UserConversationReferenceEntity>(x => x.UserId).OnDelete(DeleteBehavior.NoAction);
             });
 
             modelBuilder.Entity<UserConversationReferenceEntity>(e =>
             {
                 e.Property(e => e.UserId).IsRequired();
                 e.Property(e => e.ConversationId).HasMaxLength(500).IsRequired();
-                e.HasOne(x => x.User).WithOne().HasForeignKey<UserConversationReferenceEntity>(x => x.UserId);
+                e.HasOne(x => x.User).WithOne(x => x.ConversationReference).HasForeignKey<UserConversationReferenceEntity>(x => x.UserId);
                 e.HasKey(x => x.UserId);
             });
 

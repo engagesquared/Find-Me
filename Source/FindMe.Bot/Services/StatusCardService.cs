@@ -33,7 +33,6 @@ namespace FindMe.Bot.Services
         private const string NewLocationNumberId = "newLocationNumber";
         private const string IsSensitiveId = "newLocationSensitive";
         private const string LocationId = "location";
-        private const string DateFormat = "HH:mm, dd MMM yyyy";
         private const int OtherValue = -1;
 
         public IMessageActivity GetViewCard(string title, bool showSensitive, bool isBaseStatus, UserStatusEntity currentStatus, List<UserStatusEntity> logStatuses, bool actionsAreHidden = false, bool extendStatusIsShown = false)
@@ -57,12 +56,12 @@ namespace FindMe.Bot.Services
                     data.Location = location;
                     if (currentStatus.Expired != DateTimeOffset.MinValue)
                     {
-                        data.Expired = currentStatus.Expired.ToString(DateFormat);
+                        data.Expired = currentStatus.Expired.ToString(Strings.DateTimeFormat);
                     }
 
                     if (currentStatus.Created != DateTimeOffset.MinValue)
                     {
-                        data.Updated = currentStatus.Created.ToString(DateFormat);
+                        data.Updated = currentStatus.Created.ToString(Strings.DateTimeFormat);
                     }
                 }
 
@@ -83,7 +82,7 @@ namespace FindMe.Bot.Services
                 var logs = new List<Dictionary<string, string>>();
                 foreach (var status in logStatuses)
                 {
-                    logs.Add(new Dictionary<string, string> { { "Date", status.Created.ToString(DateFormat) }, { "UpdatedBy", status.CreatedBy.Name } });
+                    logs.Add(new Dictionary<string, string> { { "Date", status.Created.ToString(Strings.DateTimeFormat) }, { "UpdatedBy", status.CreatedBy.Name } });
                 }
 
                 data.Logs = logs;
@@ -104,7 +103,7 @@ namespace FindMe.Bot.Services
 
             data.Statuses = new List<Dictionary<string, string>>
             {
-                new Dictionary<string, string> { { AdaptiveCardsConstants.TitleProp, "Other" }, { AdaptiveCardsConstants.ValueProp, "-1" } },
+                new Dictionary<string, string> { { AdaptiveCardsConstants.TitleProp, Strings.OtherStatusOption }, { AdaptiveCardsConstants.ValueProp, "-1" } },
             };
             var sortedStatuses = statuses.OrderBy(x => x.Order);
             foreach (var status in sortedStatuses)
@@ -114,7 +113,7 @@ namespace FindMe.Bot.Services
 
             data.Locations = new List<Dictionary<string, string>>
             {
-                new Dictionary<string, string> { { AdaptiveCardsConstants.TitleProp, "Other" }, { AdaptiveCardsConstants.ValueProp, "-1" } },
+                new Dictionary<string, string> { { AdaptiveCardsConstants.TitleProp, Strings.NewLocationOption }, { AdaptiveCardsConstants.ValueProp, "-1" } },
             };
             foreach (var location in locations)
             {

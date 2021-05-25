@@ -26,6 +26,7 @@ namespace FindMe.Bot.Dialogs
         private const string ChangeManagerCommand = "person card change manager";
 
         private readonly AdaptiveCardsService adaptiveCardsService;
+        private readonly AppSettings appSettings;
         private readonly GraphService graphService;
         private readonly FindMeDbContext dbContext;
         private readonly ProactiveBot proactiveBot;
@@ -40,7 +41,8 @@ namespace FindMe.Bot.Dialogs
             GraphService graphService,
             PersonCardService personCardService,
             SearchEmployeeDialog searchEmployeeDialog,
-            StatusDialog statusDialog)
+            StatusDialog statusDialog, 
+            AppSettings appSettings)
             : base(nameof(PersonCardDialog))
         {
             this.dbContext = dbContext;
@@ -48,7 +50,7 @@ namespace FindMe.Bot.Dialogs
             this.adaptiveCardsService = adaptiveCardsService;
             this.graphService = graphService;
             this.personCardService = personCardService;
-
+            this.appSettings = appSettings;
             this.stateAccessor = conversationState.CreateProperty<PersonCardState>(nameof(PersonCardState));
 
             // This array defines how the Waterfall will execute.
@@ -152,6 +154,11 @@ namespace FindMe.Bot.Dialogs
                 case RequestStatusCommand:
                     return await stepContext.NextAsync();
                 case ChangeManagerCommand:
+                    if (this.appSettings.IsChangeManagerDisabled)
+                    {
+                        return await stepContext.EndDialogAsync();
+                    }
+
                     return await stepContext.BeginDialogAsync(nameof(ChangeManagerDialog), new ChangeManagerDialogState { UserAadId = state.UserAadId });
                 default:
                     return new DialogTurnResult(DialogTurnStatus.Waiting) { ParentEnded = false };

@@ -62,14 +62,7 @@ namespace FindMe.Bot.Dialogs
             if (state?.PreviousMessageId != null)
             {
                 var user = await this.userService.EnsureUser(state.UserIdToUpdate);
-                var activeStatus = this.dbContext.UserStatuses.Where(x => x.UserId == user.AadUserId && x.Created > DateTimeOffset.Now.Date && x.Expired > DateTimeOffset.Now)
-                    .Include(x => x.CreatedBy).Include(x => x.Location).Include(x => x.Status)
-                    .OrderByDescending(x => x.Created).FirstOrDefault();
-
-                if ((user.UserScheduleType == UserScheduleType.Standard || user.UserScheduleType == null) && activeStatus == null)
-                {
-                    activeStatus = await this.graphService.GetUserCurrentStatus(state.UserIdToUpdate);
-                }
+                var activeStatus = await this.userService.GetActiveStatus(user);
 
                 var cardMessage = this.statusCardService.GetViewCard(user.Name, state.CanSeeSensitiveInfo, false, activeStatus, null, true);
                 cardMessage.Id = state.PreviousMessageId;
@@ -112,7 +105,7 @@ namespace FindMe.Bot.Dialogs
 
                 var user = await this.userService.EnsureUser(state.UserIdToUpdate);
                 var latestStatuses = this.dbContext.UserStatuses.Where(x => x.UserId == user.AadUserId).Include(x => x.CreatedBy).OrderByDescending(x => x.Created).Take(6).ToList();
-                var activeStatus = this.dbContext.UserStatuses.Where(x => x.UserId == user.AadUserId && x.Created > DateTimeOffset.Now.Date && x.Expired > DateTimeOffset.Now)
+                var activeStatus = this.dbContext.UserStatuses.Where(x => x.UserId == user.AadUserId && x.Expired > DateTimeOffset.Now)
                     .Include(x => x.CreatedBy).Include(x => x.Location).Include(x => x.Status)
                     .OrderByDescending(x => x.Created).FirstOrDefault();
 

@@ -9,43 +9,35 @@ namespace FindMe.Bot.Services
     using System.Linq;
     using System.Threading.Tasks;
     using FindMe.Bot.DialogStates;
+    using FindMe.Bot.Resources;
     using FindMe.Core.DB;
-    using FindMe.Core.DB.Entities;
     using FindMe.Core.Services;
     using Microsoft.EntityFrameworkCore;
 
     public class PersonCardService
     {
-        private const string DateFormat = "HH:mm, dd MMM yyyy";
+        private readonly AppSettings appSettings;
         private readonly GraphService graphService;
         private readonly FindMeDbContext dbContext;
         private readonly UserService userService;
 
-        public PersonCardService(FindMeDbContext dbContext, GraphService graphService, UserService userService)
+        public PersonCardService(FindMeDbContext dbContext, GraphService graphService, UserService userService, AppSettings appSettings)
         {
             this.dbContext = dbContext;
             this.graphService = graphService;
             this.userService = userService;
+            this.appSettings = appSettings;
         }
 
         public async Task<PersonCardData> GetPersonCardData(string userAadId, bool isCurrentUser, bool isUserManager)
         {
             var user = await this.userService.EnsureUser(userAadId);
-            var userStatus = this.dbContext.UserStatuses.Where(x => x.UserId.ToString() == userAadId && x.Created > DateTimeOffset.Now.Date && x.Expired > DateTimeOffset.Now)
-                .Include(x => x.Status)
-                .Include(x => x.Location)
-                .OrderByDescending(x => x.Created)
-                .FirstOrDefault();
+            var userStatus = await this.userService.GetActiveStatus(user);
 
             var statusTitle = string.Empty;
             var statusInOut = string.Empty;
             var statusCreated = string.Empty;
             var statusExpired = string.Empty;
-
-            if (userStatus == null && (user.UserScheduleType == UserScheduleType.Standard || user.UserScheduleType == null))
-            {
-                userStatus = await this.graphService.GetUserCurrentStatus(userAadId);
-            }
 
             if (userStatus != null)
             {
@@ -53,12 +45,12 @@ namespace FindMe.Bot.Services
                 statusInOut = userStatus.Type == Core.DB.Entities.StatusType.In ? "In" : "Out";
                 if (userStatus.Expired != DateTimeOffset.MinValue)
                 {
-                    statusExpired = userStatus.Expired.ToString(DateFormat);
+                    statusExpired = userStatus.Expired.ToString(Strings.DateTimeFormat);
                 }
 
                 if (userStatus.Created != DateTimeOffset.MinValue)
                 {
-                    statusCreated = userStatus.Created.ToString(DateFormat);
+                    statusCreated = userStatus.Created.ToString(Strings.DateTimeFormat);
                 }
             }
 
@@ -69,7 +61,7 @@ namespace FindMe.Bot.Services
             var logs = new List<Dictionary<string, string>>();
             foreach (var status in latestStatuses)
             {
-                logs.Add(new Dictionary<string, string> { { "Date", status.Created.ToString(DateFormat) }, { "UpdatedBy", status.CreatedBy.Name } });
+                logs.Add(new Dictionary<string, string> { { "Date", status.Created.ToString(Strings.DateTimeFormat) }, { "UpdatedBy", status.CreatedBy.Name } });
             }
 
             var canSeeLocation = userStatus?.IsSensitive == false || isCurrentUser || isUserManager;
@@ -93,6 +85,7 @@ namespace FindMe.Bot.Services
                 ActionsAreHidden = false,
                 IsCurrentUser = isCurrentUser,
                 IsUserManager = isUserManager,
+                IsManagerChangeDisabled = this.appSettings.IsChangeManagerDisabled,
                 CanSeeLocation = canSeeLocation,
                 Logs = logs,
             };

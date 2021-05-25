@@ -94,6 +94,19 @@ namespace FindMe.Core.Services
             return user;
         }
 
+        public async Task<UserStatusEntity> GetActiveStatus(UserEntity user)
+        {
+            var activeStatus = this.dbContext.UserStatuses.Where(x => x.UserId == user.AadUserId && x.Expired > DateTimeOffset.Now)
+                     .Include(x => x.CreatedBy).Include(x => x.Location).Include(x => x.Status)
+                     .OrderByDescending(x => x.Created).FirstOrDefault();
+
+            if ((user.UserScheduleType == UserScheduleType.Standard || user.UserScheduleType == null) && activeStatus == null)
+            {
+                activeStatus = await this.graphService.GetUserCurrentStatus(user.AadUserId.ToString());
+            }
+            return activeStatus;
+        }
+
         private string GetEmailNamePart(string email)
         {
             var atIndex = email?.IndexOf('@');

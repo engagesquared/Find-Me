@@ -47,5 +47,7 @@ namespace FindMe.Bot.DialogStates
         public bool IsCurrentUser { get; set; }
 
         public bool IsUserManager { get; set; }
+
+        public bool IsManagerChangeDisabled { get; set; }
     }
 }

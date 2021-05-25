@@ -15,6 +15,7 @@ namespace FindMe.Bot.Resources
         public const string SearchEmployee = "search employee";
         public const string ChangeMyManager = "change my manager";
         public const string TeamReport = "team report";
+        public const string TeamStatus = "team status";
         public const string UpdateStatus = "update status";
 
         public static List<string> AllRootCommands { get; } = new List<string>
@@ -25,6 +26,7 @@ namespace FindMe.Bot.Resources
             TakeATour,
             SearchEmployee,
             TeamReport,
+            TeamStatus,
             UpdateStatus,
             ChangeMyManager,
         };

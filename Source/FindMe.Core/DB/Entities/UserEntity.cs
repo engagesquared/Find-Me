@@ -35,6 +35,8 @@ namespace FindMe.Core.DB.Entities
 
         public UserEntity Manager { get; set; }
 
+        public UserConversationReferenceEntity ConversationReference { get; set; }
+
         public bool ManagerIsEmpty { get; set; }
 
         public List<UserEntity> Reporters { get; set; }

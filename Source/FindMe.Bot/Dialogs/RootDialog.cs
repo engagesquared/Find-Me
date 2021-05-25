@@ -38,6 +38,7 @@ namespace FindMe.Bot.Dialogs
             ChangeHoursDialog changeHoursDialog,
             StatusDialog statusDialog,
             PersonCardDialog personCardDialog,
+            TeamStatusDialog teamStatusDialog,
             TeamReportDialog teamReportDialog,
             ChangeManagerDialog changeMyManagerDialog)
             : base(nameof(RootDialog))
@@ -72,6 +73,7 @@ namespace FindMe.Bot.Dialogs
             this.AddDialog(changeHoursDialog);
             this.AddDialog(statusDialog);
             this.AddDialog(teamReportDialog);
+            this.AddDialog(teamStatusDialog);
             this.AddDialog(personCardDialog);
             this.AddDialog(changeMyManagerDialog);
 
@@ -137,6 +139,8 @@ namespace FindMe.Bot.Dialogs
                         return await stepContext.BeginDialogAsync(nameof(ChangeHoursDialog));
                     case Commands.TeamReport:
                         return await stepContext.BeginDialogAsync(nameof(TeamReportDialog));
+                    case Commands.TeamStatus:
+                        return await stepContext.BeginDialogAsync(nameof(TeamStatusDialog));
                     case Commands.TakeATour:
                         var carouselCardList = new List<AdaptiveCardObject>
                     {
@@ -151,11 +155,16 @@ namespace FindMe.Bot.Dialogs
                     case Commands.SearchEmployee:
                         return await stepContext.BeginDialogAsync(nameof(PersonCardDialog));
                     case Commands.ChangeMyManager:
-                        return await stepContext.BeginDialogAsync(nameof(ChangeManagerDialog), new ChangeManagerDialogState { UserAadId = stepContext.Context.Activity.From.AadObjectId });
-                    default:
-                        await turnContext.SendActivityAsync(MessageFactory.Text("Unsupported command. Please try again."));
-                        return await stepContext.EndDialogAsync();
+                        if (!this.appSettings.IsChangeManagerDisabled)
+                        {
+                            return await stepContext.BeginDialogAsync(nameof(ChangeManagerDialog), new ChangeManagerDialogState { UserAadId = stepContext.Context.Activity.From.AadObjectId });
+                        }
+
+                        break;
                 }
+
+                await turnContext.SendActivityAsync(MessageFactory.Text("Unsupported command. Please try again."));
+                return await stepContext.EndDialogAsync();
             }
 
             return await stepContext.EndDialogAsync();

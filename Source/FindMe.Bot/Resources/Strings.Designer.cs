@@ -79,11 +79,47 @@ namespace FindMe.Bot.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to HH:mm, dd MMM yyyy.
+        /// </summary>
+        internal static string DateTimeFormat {
+            get {
+                return ResourceManager.GetString("DateTimeFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New location.
+        /// </summary>
+        internal static string NewLocationOption {
+            get {
+                return ResourceManager.GetString("NewLocationOption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No results found..
         /// </summary>
         internal static string NoResultsMessage {
             get {
                 return ResourceManager.GetString("NoResultsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t have subordinates to show their statuses.
+        /// </summary>
+        internal static string NoSubordinatesMessage {
+            get {
+                return ResourceManager.GetString("NoSubordinatesMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Other.
+        /// </summary>
+        internal static string OtherStatusOption {
+            get {
+                return ResourceManager.GetString("OtherStatusOption", resourceCulture);
             }
         }
         

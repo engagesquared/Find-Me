@@ -1,0 +1,71 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.2",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Team statuses",
+      "wrap": true,
+      "size": "Medium",
+      "weight": "Bolder"
+    },
+    {
+      "$data": "${users}",
+      "type": "Container",
+      "items": [
+        {
+          "type": "ColumnSet",
+          "columns": [
+            {
+              "type": "Column",
+              "width": "auto",
+              "items": [
+                {
+                  "type": "Image",
+                  "style": "Person",
+                  "size": "Small",
+                  "url": "${ImageUrl}"
+                }
+              ],
+              "verticalContentAlignment": "Top"
+            },
+            {
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "$when": "${Name != ''}",
+                  "type": "TextBlock",
+                  "text": "${Name}",
+                  "wrap": true,
+                  "weight": "Bolder"
+                },
+                {
+                  "type": "FactSet",
+                  "facts": [
+                    {
+                      "title": "Status:",
+                      "value": "${Status}"
+                    },
+                    {
+                      "$when": "${Expires != ''}",
+                      "title": "Expires:",
+                      "value": "${Expires}"
+                    },
+                    {
+                      "$when": "${Location != ''}",
+                      "title": "Location:",
+                      "value": "${Location}"
+                    }
+                  ],
+                  "spacing": "None"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
